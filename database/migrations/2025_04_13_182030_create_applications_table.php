@@ -15,14 +15,16 @@ class CreateApplicationsTable extends Migration
     {
         Schema::create('applications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('listing_id')->constrained()->onDelete('cascade');
+            $table->unsignedBigInteger('listing_id');
+            $table->unsignedBigInteger('user_id');
             $table->string('email');
+            $table->timestamp('applied_at')->nullable();
             $table->timestamps();
-            
-            // Ensure each user applies only once per listing
-            $table->unique(['user_id', 'listing_id']);
+        
+            $table->foreign('listing_id')->references('id')->on('listings')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
+        
     }
 
     /**
