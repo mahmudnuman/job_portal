@@ -110,36 +110,45 @@ export default {
     };
 
     const fetchJob = async (jobId) => {
-      if (!jobId) {
-        error.value = "Job ID is missing";
-        loading.value = false;
-        return;
-      }
+  if (!jobId) {
+    error.value = "Job ID is missing";
+    loading.value = false;
+    return;
+  }
 
-      loading.value = true;
-      error.value = null;
-      job.value = null;
-      alreadyApplied.value = false;
+  loading.value = true;
+  error.value = null;
+  job.value = null;
+  alreadyApplied.value = false;
 
-      try {
-        const token = getAuthToken();
-        const headers = token ? { Authorization: `Bearer ${token}` } : {};
-        
-        const { data } = await axios.get(`/api/listings/${jobId}`, { 
-          headers,
-          validateStatus: status => status < 500
-        });
-        
-        job.value = data;
-        if (data.has_applied) {
-          alreadyApplied.value = true;
-        }
-      } catch (err) {
-        handleFetchError(err);
-      } finally {
-        loading.value = false;
-      }
-    };
+  try {
+    const token = getAuthToken();
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    
+    const response = await axios.get(`/api/listings/${jobId}`, { 
+      headers,
+      validateStatus: status => status < 500 // Avoid throwing for 401, 403
+    });
+
+    if (response.status === 401 || response.status === 403) {
+      // Token invalid or expired, redirect to login
+      window.location.href = '/login';
+      return;
+    }
+
+    const data = response.data;
+    job.value = data;
+
+    if (data.has_applied) {
+      alreadyApplied.value = true;
+    }
+  } catch (err) {
+    handleFetchError(err);
+  } finally {
+    loading.value = false;
+  }
+};
+
 
     const handleApply = async () => {
       if (alreadyApplied.value) return;
