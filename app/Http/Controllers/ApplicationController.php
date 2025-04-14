@@ -4,6 +4,7 @@ use App\Models\Application;
 use App\Models\Listing;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use App\Mail\NewApplicationNotification;
 
 class ApplicationController extends Controller
 {
@@ -25,9 +26,7 @@ class ApplicationController extends Controller
         $listing->increment('applications_count');
 
         // Send email (configure mail properly in .env)
-        Mail::raw("New applicant: {$user->name} ({$user->email})", function ($message) use ($listing) {
-            $message->to('company@example.com')->subject("New Application for {$listing->title}");
-        });
+        Mail::to('company@example.com')->queue(new NewApplicationNotification($user, $listing));
 
         return response()->json(['message' => 'Application submitted'], 201);
     }
