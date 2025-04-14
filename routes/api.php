@@ -20,10 +20,9 @@ Route::post('/login', [AuthController::class, 'login']);
 
 
 Route::get('/listings', [ListingController::class, 'index']); // List all jobs
-Route::get('/listings/{id}', [ListingController::class, 'show']); 
 // Protected routes - must be logged in with JWT
 Route::middleware('auth:api')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
-
+    Route::get('/listings/{id}', [ListingController::class, 'show']); 
     Route::post('/listings/{id}/apply', [ApplicationController::class, 'apply']);
 });

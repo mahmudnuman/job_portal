@@ -30,7 +30,6 @@ class ListingController extends Controller
             $listing->increment('view_count');
             Cache::put($key, true, now()->addHours(24)); // Keep track for 24 hours
         }
-    
         return response()->json($listing);
     }
 }

@@ -10,20 +10,24 @@ class ApplicationController extends Controller
 {
     public function apply(Request $request, $listingId)
     {
+
+
         $user = auth('api')->user();
         $listing = Listing::findOrFail($listingId);
 
+        
+
         // Prevent multiple applications by same user
         if (Application::where('user_id', $user->id)->where('listing_id', $listingId)->exists()) {
-            return response()->json(['error' => 'Already applied'], 400);
+            return response()->json(['message' => 'Already applied'], 410);
         }
 
         $application = Application::create([
             'user_id'    => $user->id,
             'listing_id' => $listingId,
+            'email' => $user->email
         ]);
 
-        $listing->increment('applications_count');
 
         // Send email (configure mail properly in .env)
         Mail::to('company@example.com')->queue(new NewApplicationNotification($user, $listing));
