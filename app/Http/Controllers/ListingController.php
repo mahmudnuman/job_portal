@@ -7,9 +7,16 @@ use Illuminate\Support\Facades\Cache;
 
 class ListingController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return Listing::select('id', 'title', 'slug', 'company_name', 'view_count', 'applications_count')->get();
+        // Use pagination with 10 listings per page
+        $page = $request->query('page', 1); // Default to page 1 if no page query parameter is provided
+        $perPage = 9;
+
+        $listings = Listing::select('*')
+            ->paginate($perPage, ['*'], 'page', $page);
+
+        return response()->json($listings);
     }
 
     public function show($id, Request $request)
