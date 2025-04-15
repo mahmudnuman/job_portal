@@ -1,6 +1,3 @@
-Sure! Here's a `README.md` file tailored for your job portal project with setup instructions, implementation summary, and suggestions for future improvements:
-
----
 
 ```markdown
 # Job Portal - Frontend (Vue 3)
@@ -38,7 +35,6 @@ This is the frontend of a simple Job Portal built with **Vue 3** and **Bootstrap
    yarn dev
    ```
 
-4. Open your browser and navigate to `http://localhost:5173`
 
 ---
 
@@ -95,5 +91,3 @@ MIT License
 ```
 
 ---
-
-Let me know if you'd like me to tailor this more (e.g., for a private project, or include backend setup too).
